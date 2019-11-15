@@ -2,15 +2,17 @@ from joblib import Memory
 from nilearn import plotting
 import matplotlib
 from matplotlib import pyplot as plt
+import copy
+import nibabel as nib
+import nimare
 
 from data_utils import retrieve_imgs, iterator_imgs, iterator_paths_imgs, \
     iterator_name_imgs
 from extract import get_activations
 from meta_formatter import dict_from_activations, dict_from_paths
 from process import process
-import copy
-import nibabel as nib
-import nimare
+import compare
+import img_utils
 
 import meta_ALE
 import meta_KDA
@@ -67,14 +69,16 @@ def run_meta(filename, verbose=False):
     res_ALE, p_ALE = meta_ALE.fit(cbma_dict)
     res_KDA, p_KDA = meta_KDA.fit(cbma_dict)
 
+    # Threshold meta-analysis maps
     res_ALE, = fdr_threshold([res_ALE], p_ALE)
     res_KDA, = fdr_threshold([res_KDA], p_KDA)
 
-    plotting.plot_stat_map(res_ALE, title=f'{filename} ALE')
-    plotting.plot_stat_map(res_KDA, title=f'{filename} KDA')
-    plotting.plot_stat_map(p_ALE, title=f'{filename} ALE p')
-    plotting.plot_stat_map(p_KDA, title=f'{filename} KDA p')
-    plt.show()
+    # Turn thresholded maps into bool maps
+    bool_ALE = img_utils.to_bool(res_ALE)
+    bool_KDA = img_utils.to_bool(res_KDA)
+
+    # Compare meta-analysis result
+    print(compare.kappa(bool_ALE, bool_KDA))
 
     exit()
 
