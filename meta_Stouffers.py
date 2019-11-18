@@ -9,4 +9,7 @@ def fit(ds_dict):
     ma = nimare.meta.ibma.Stouffers()
     res = ma.fit(ds)
 
-    return res.get_map('z')
+    z = res.get_map('z')
+    p = res.get_map('p')
+
+    return z, p

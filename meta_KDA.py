@@ -3,7 +3,6 @@
 import nimare
 from nimare.dataset import Dataset
 import numpy as np
-import nibabel as nib
 
 
 def fit(ds_dict):
@@ -19,6 +18,7 @@ def fit(ds_dict):
     return of, p
 
 
-def _get_p_map(KDA, result):
-    log_p = KDA._fwe_correct_permutation(result, n_iters=20)['logp_level-voxel']
+def _get_p_map(estimator, result):
+    cor_imgs = estimator._fwe_correct_permutation(result, n_iters=20)
+    log_p = cor_imgs['logp_level-voxel']
     return np.exp(-log_p)
