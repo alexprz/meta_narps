@@ -68,24 +68,32 @@ def run_meta(filename, verbose=False):
 
     res_ALE, p_ALE = meta_ALE.fit(cbma_dict)
     res_KDA, p_KDA = meta_KDA.fit(cbma_dict)
+    res_MKDA, p_MKDA = meta_MKDA.fit(cbma_dict)
+    res_Stouffers, p_Stouffers = meta_Stouffers.fit(ibma_dict)
+    res_Fishers, p_Fishers = meta_Fishers.fit(ibma_dict)
 
     # Threshold meta-analysis maps
     res_ALE, = fdr_threshold([res_ALE], p_ALE)
     res_KDA, = fdr_threshold([res_KDA], p_KDA)
+    res_MKDA, = fdr_threshold([res_MKDA], p_MKDA)
+    res_Stouffers, = fdr_threshold([res_Stouffers], p_Stouffers)
+    res_Fishers, = fdr_threshold([res_Fishers], p_Fishers)
 
     # Turn thresholded maps into bool maps
     bool_ALE = img_utils.to_bool(res_ALE)
     bool_KDA = img_utils.to_bool(res_KDA)
+    bool_MKDA = img_utils.to_bool(res_MKDA)
+    bool_Stouffers = img_utils.to_bool(res_Stouffers)
+    bool_Fishers = img_utils.to_bool(res_Fishers)
 
     # Compare meta-analysis result
     print(compare.kappa(bool_ALE, bool_KDA))
+    print(compare.kappa(bool_ALE, bool_MKDA))
+    print(compare.kappa(bool_KDA, bool_MKDA))
+    print(compare.kappa(bool_ALE, bool_Stouffers))
+    print(compare.kappa(bool_ALE, bool_Fishers))
 
     exit()
-
-    res_MKDA = meta_MKDA.fit(cbma_dict)
-
-    res_Stouffers = meta_Stouffers.fit(ibma_dict)
-    res_Fishers = meta_Fishers.fit(ibma_dict)
 
     plotting.plot_stat_map(res_ALE, title=f'{filename} ALE')
     plotting.plot_stat_map(res_KDA, title=f'{filename} KDA')
