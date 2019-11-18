@@ -1,0 +1,10 @@
+joblib
+nilearn
+scipy==1.2
+sklearn
+nose
+matplotlib
+nimare
+numpy
+git+https://github.com/neurostuff/NiMARE.git
+git+https://github.com/alexprz/nipy.git
